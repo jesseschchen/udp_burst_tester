@@ -10,36 +10,10 @@
 
 
 
-char* read_random_bytes(int num_bytes) {
-	char* buffer = malloc(num_bytes);
-	FILE* fp = fopen("/dev/urandom", "r");
-	int bytes_read = fread(buffer, 1, num_bytes, fp);
 
-
-	fclose(fp);
-	return buffer;
+void msleep(int milliseconds) {
+	usleep(milliseconds * 1000);
 }
-
-
-char* create_message(int num_bytes, char* message_id, char* burst_id, char* random_bytes) {
-	char* message = random_bytes;
-
-	//char* syn = "SYN\0";
-	//char* fin = "FIN\0";
-	char* syn = "SYN*";
-	char* fin = "FIN*";
-
-	memcpy(message, syn, 4);
-	memcpy(&message[4], message_id, 4);
-
-	memcpy(&message[num_bytes-8], fin, 4);
-	memcpy(&message[num_bytes-4], message_id, 4);
-
-	//printf("%s\n", message);
-
-	return message;
-}
-
 
 
 int open_udp_port() {
@@ -55,7 +29,7 @@ int open_udp_port() {
 }
 
 
-// creates a array of char arrays
+// creates an array of char arrays
 char** create_burst_packets(int burst_size, int per_packet_size) {
 	// malloc pointers for each packet
 	char** burst_packets = malloc(burst_size * sizeof(char*));
@@ -99,9 +73,15 @@ void send_udp_burst_loop(struct sockaddr_in address, int duration, int burst_int
 
 		send_udp_burst(client_fd, address, burst_size, per_packet_size, burst_packets);
 		printf("burst sent\n");
+
+
+		// sleeps for burst_interval milliseconds
+		msleep(burst_interval);
 	}
 
 }
+
+
 
 // ./uclient <dst_ip_addr> <dst_port> <duration> <burst_interval> <burst_size> <per_packet_size>
 int main(int argc, char const* argv[]) {
