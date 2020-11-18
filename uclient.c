@@ -44,7 +44,6 @@ char* create_message(int num_bytes, char* message_id, char* burst_id, char* rand
 
 int open_udp_port() {
 	int client_fd;
-	struct sockaddr_in address;
 
 	if ((client_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		perror("socket creation failed");
@@ -104,7 +103,7 @@ void send_udp_burst_loop(struct sockaddr_in address, int duration, int burst_int
 
 }
 
-// ./uclient <dst_ip_addr> <dst_port> <duration> <burst_interval> <burst_size>
+// ./uclient <dst_ip_addr> <dst_port> <duration> <burst_interval> <burst_size> <per_packet_size>
 int main(int argc, char const* argv[]) {
 	char* dst_ip_addr = (char*)argv[1];
 	int dst_port = atoi(argv[2]);
@@ -112,8 +111,8 @@ int main(int argc, char const* argv[]) {
 	int burst_interval = atoi(argv[4]);
 	int burst_size = atoi(argv[5]);
 
-
-	int per_packet_size = 10;
+	//int per_packet_size = atoi(argv[6]);
+	int per_packet_size = 1472;
 
 
 	struct sockaddr_in address;
