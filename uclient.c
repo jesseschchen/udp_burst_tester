@@ -70,13 +70,14 @@ void send_udp_burst_loop(struct sockaddr_in address, int duration, int burst_int
 
 	for (int i = 0; i < num_bursts; i++) {
 		modify_burst_packets(burst_packets, burst_size, per_packet_size, (char*)&i);
+		
+		msleep(burst_interval);
 
 		send_udp_burst(client_fd, address, burst_size, per_packet_size, burst_packets);
 		printf("burst sent\n");
 
 
 		// sleeps for burst_interval milliseconds
-		msleep(burst_interval);
 	}
 
 }
